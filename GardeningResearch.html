@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GardeningResearch. Сайт по помощи в садоводстве</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-nav {
+            background-color: #1e3a8a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .menu-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .menu-btn:hover {
+            background-color: #3b5ba5;
+            transform: scale(1.02);
+        }
+
+        .menu-btn.active {
+            background-color: #2563eb;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2), 0 2px 4px rgba(255,255,255,0.3);
+            text-decoration: underline 2px white;
+            text-underline-offset: 6px;
+        }
+
+        .content-area {
+            flex: 1;
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem 2rem;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 90%;
+        }
+
+        .page-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #1f2937;
+        }
+
+        .page-content h2 {
+            color: #1e3a8a;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            border-left: 6px solid #2563eb;
+            padding-left: 1rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed #a5b4fc;
+        }
+
+        .form-section h3 {
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .select-group {
+            margin: 1.2rem 0;
+        }
+
+        .select-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            font-size: 1.2rem;
+        }
+
+        .select-group select {
+            width: 100%;
+            max-width: 450px;
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+            border: 2px solid #a5b4fc;
+            border-radius: 20px;
+            background-color: #f8fafc;
+            cursor: pointer;
+        }
+
+        .select-group select:disabled {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .info-block {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #eef2ff;
+            border-radius: 24px;
+            border-left: 6px solid #2563eb;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .info-note {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: #4b5563;
+        }
+
+        /* Энциклопедия */
+        .encyclopedia-section {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 16px;
+            background: #ffffff;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            background-color: #f0f4fa;
+            padding: 14px 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            cursor: pointer;
+            margin: 0;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .section-title:hover {
+            background-color: #e2e8f0;
+        }
+        .section-content {
+            display: none;
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .subcategory {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            border-left: 2px solid #a5b4fc;
+            padding-left: 16px;
+        }
+        .subcategory-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #2563eb;
+            cursor: pointer;
+            margin: 10px 0 8px;
+            display: inline-block;
+        }
+        .subcategory-content {
+            display: none;
+            margin-left: 20px;
+            padding-bottom: 8px;
+        }
+        .variety-card {
+            margin: 12px 0 12px 20px;
+            padding: 12px 16px;
+            background: #f9fafb;
+            border-radius: 20px;
+            border-left: 4px solid #2563eb;
+        }
+        .variety-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: #1e3a8a;
+            display: inline-block;
+        }
+        .variety-details {
+            display: none;
+            margin-top: 12px;
+            padding-left: 8px;
+        }
+        .scale {
+            display: flex;
+            gap: 8px;
+            margin: 8px 0;
+            align-items: center;
+        }
+        .scale-segment {
+            width: 40px;
+            height: 24px;
+            border: 1px solid #333;
+            background-color: #e5e7eb;
+        }
+        .scale-segment.filled-yellow {
+            background-color: #facc15;
+        }
+        .scale-segment.filled-blue {
+            background-color: #3b82f6;
+        }
+
+        /* стили для погодных подразделов */
+        .weather-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .weather-icon {
+            font-size: 3rem;
+            min-width: 70px;
+            text-align: center;
+            background: #f0f4fa;
+            padding: 10px;
+            border-radius: 20px;
+        }
+        .weather-text {
+            flex: 1;
+        }
+        .weather-text p {
+            margin-bottom: 10px;
+        }
+        @media (max-width: 600px) {
+            .weather-item {
+                flex-direction: column;
+            }
+            .weather-icon {
+                align-self: flex-start;
+            }
+        }
+
+        /* стили для вредителей */
+        .pest-suspect-list {
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #f9fafb;
+            border-radius: 16px;
+            border-left: 3px solid #2563eb;
+        }
+        .pest-suspect-list p {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1e3a8a;
+        }
+        .pest-suspect-list ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            list-style: none;
+            padding-left: 0;
+        }
+        .pest-suspect-list li {
+            background-color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #a5b4fc;
+            font-size: 0.95rem;
+        }
+
+        /* результат исследования */
+        .result-card {
+            background-color: #f0fdf4;
+            border-left: 6px solid #16a34a;
+            padding: 1rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+        }
+        .score {
+            float: right;
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: #ea580c;
+        }
+        .advice {
+            background-color: #fef9c3;
+            padding: 12px;
+            border-radius: 16px;
+            margin-top: 12px;
+        }
+        .search-btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.2s;
+        }
+        .search-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .search-btn:hover:enabled {
+            background-color: #1d4ed8;
+            transform: scale(1.02);
+        }
+        hr {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <button class="menu-btn" data-page="about"> О сайте</button>
+        <button class="menu-btn" data-page="research"> Исследование</button>
+        <button class="menu-btn" data-page="encyclopedia"> Энциклопедия</button>
+    </nav>
+
+    <main class="content-area" id="content"></main>
+
+    <script>
+        // ---------- ДАННЫЕ ДЛЯ ФОРМЫ ----------
+        const vegData = {
+            tomato: { name: 'Помидор', varieties: ['Розовый гигант', 'Чудо земли', 'Батяня'] },
+            cucumber: { name: 'Огурец', varieties: ['Генеральский', 'Динамит', 'Аванс F1'] },
+            onion: { name: 'Лук', varieties: ['Сибиряк', 'Глобус', 'Фермер поздний'] }
+        };
+
+        // ДАННЫЕ ИЗ ЭНЦИКЛОПЕДИИ ДЛЯ ОЦЕНКИ
+        const encyclopediaData = {
+            // Помидоры
+            "Розовый гигант": { place: "Теплица", lightFilled: 4, humidityFilled: 2 },
+            "Чудо земли": { place: "Открытый грунт", lightFilled: 5, humidityFilled: 3 },
+            "Батяня": { place: "Теплица / открытый грунт", lightFilled: 4, humidityFilled: 2 },
+            // Огурцы
+            "Генеральский": { place: "Открытый грунт", lightFilled: 3, humidityFilled: 3 },
+            "Динамит": { place: "Открытый грунт", lightFilled: 4, humidityFilled: 3 },
+            "Аванс F1": { place: "Открытый грунт", lightFilled: 4, humidityFilled: 4 },
+            // Лук
+            "Сибиряк": { place: "Открытый грунт", lightFilled: 4, humidityFilled: 4 },
+            "Глобус": { place: "Открытый грунт", lightFilled: 4, humidityFilled: 3 },
+            "Фермер поздний": { place: "Открытый грунт", lightFilled: 5, humidityFilled: 5 }
+        };
+
+        // данные о вредителях
+        const pestsData = {
+            "Тля": ["Розовый гигант", "Батяня", "Генеральский", "Динамит", "Аванс F1"],
+            "Белокрылка": ["Батяня", "Чудо земли", "Розовый гигант", "Генеральский", "Аванс F1"],
+            "Паутинный клещ": ["Розовый гигант", "Батяня", "Чудо земли", "Генеральский", "Динамит", "Аванс F1"]
+        };
+
+        const pestsAdvice = {
+            "Тля": "Опрыскивайте мыльным раствором, настоем чеснока или используйте инсектициды (Фитоверм, Искра). Привлекайте божьих коровок.",
+            "Белокрылка": "Используйте жёлтые клеевые ловушки, обработайте препаратами (Актара, Конфидор), проветривайте теплицы.",
+            "Паутинный клещ": "Повышайте влажность, опрыскивайте акарицидами (Антиклещ, Фитоверм), удаляйте поражённые листья."
+        };
+
+        // функция оценки (от 1 до 10)
+        function getScore(userVal, requiredVal, maxVal = 5) {
+            let diff = Math.abs(userVal - requiredVal);
+            if (diff === 0) return 10;
+            if (diff === 1) return 7;
+            if (diff === 2) return 5;
+            if (diff === 3) return 3;
+            return 1;
+        }
+
+        // совет по освещению
+        function getLightAdvice(userVal, requiredVal, lightType) {
+            if (lightType === 'sun') {
+                return " При солнечном свете важно обеспечить растению 10–12 часов светового дня. Используйте отражающие экраны, если солнца недостаточно.";
+            }
+            if (userVal < requiredVal) {
+                return " Увеличьте освещение: добавьте фитолампы, приблизьте лампы к растению или увеличьте время досветки до 12–14 часов.";
+            } else if (userVal > requiredVal) {
+                return " Слишком яркий свет может вызвать ожоги. Притените растения или увеличьте расстояние до ламп. Оптимальный уровень освещённости для этого сорта — " + requiredVal + " из 5.";
+            } else {
+                return " Освещение подобрано идеально!";
+            }
+        }
+
+        // совет по влажности
+        function getHumidityAdvice(userVal, requiredVal) {
+            if (userVal < requiredVal) {
+                return " Повысьте влажность: используйте увлажнитель воздуха, опрыскивайте листья, поставьте ёмкости с водой рядом с растениями.";
+            } else if (userVal > requiredVal) {
+                return " Снизьте влажность: обеспечьте хорошую вентиляцию, проветривайте теплицу, сократите полив и опрыскивания.";
+            } else {
+                return " Влажность воздуха идеально подходит для этого сорта!";
+            }
+        }
+
+        // ---------- ЭНЦИКЛОПЕДИЯ ----------
+        function getEncyclopediaHTML() {
+            return `
+                <div class="page-content">
+                    <h2> Энциклопедия</h2>
+                    <div id="encyclopediaRoot"></div>
+                </div>
+            `;
+        }
+
+        function initEncyclopediaScripts() {
+            const root = document.getElementById('encyclopediaRoot');
+            if (!root) return;
+
+            const varietiesInfo = encyclopediaData;
+
+            const plants = {
+                "Помидор": ["Розовый гигант", "Чудо земли", "Батяня"],
+                "Огурец": ["Генеральский", "Динамит", "Аванс F1"],
+                "Лук": ["Сибиряк", "Глобус", "Фермер поздний"]
+            };
+
+            function renderScale(filledCount, colorClass, total = 5) {
+                let html = '<div class="scale">';
+                for (let i = 0; i < total; i++) {
+                    const fill = i < filledCount ? `filled-${colorClass}` : '';
+                    html += `<div class="scale-segment ${fill}"></div>`;
+                }
+                html += '</div>';
+                return html;
+            }
+
+            function renderPlants() {
+                let html = '<div class="subcategory">';
+                for (const [plant, varieties] of Object.entries(plants)) {
+                    html += `
+                        <div>
+                            <div class="subcategory-title" data-plant="${plant}"> ${plant}</div>
+                            <div class="subcategory-content" id="plant-${plant.replace(/ /g, '')}" style="display:none;">
+                    `;
+                    for (const v of varieties) {
+                        const info = varietiesInfo[v] || { place: "—", lightFilled: 3, humidityFilled: 2 };
+                        html += `
+                            <div class="variety-card">
+                                <div class="variety-name" data-variety="${v}"> ${v}</div>
+                                <div class="variety-details" id="details-${v.replace(/ /g, '')}" style="display:none;">
+                                    <p><strong>Выращивается в:</strong> ${info.place}</p>
+                                    <p><strong>Требуемая освещённость:</strong></p>
+                                    ${renderScale(info.lightFilled, 'yellow', 5)}
+                                    <p><strong>Требуемая влажность:</strong></p>
+                                    ${renderScale(info.humidityFilled, 'blue', 5)}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    html += `</div></div>`;
+                }
+                html += '</div>';
+                return html;
+            }
+
+            function renderWeather() {
+                const weatherSubs = [
+                    { title: " Температура", icon: "", text: "Резкие перепады температур могут вызвать стресс у растений. Используйте укрывной материал, мульчирование и парники. В жару обеспечьте регулярный полив и притенение." },
+                    { title: " Освещение", icon: "", text: "Недостаток света замедляет рост, а избыток может вызвать ожоги. Установите фитолампы для рассады, а в открытом грунте используйте затеняющие сетки в полдень." },
+                    { title: " Влажность воздуха", icon: "", text: "Слишком сухой воздух ведёт к усыханию листьев и поражению паутинным клещом. Повысить влажность можно опрыскиванием, ёмкостями с водой или увлажнителем. При высокой влажности проветривайте теплицы." },
+                    { title: " Осадки", icon: "", text: "Затяжные дожди вызывают загнивание корней. Сделайте дренажные канавки, высокие грядки. При длительной засухе организуйте капельный полив." },
+                    { title: " Ветер", icon: "", text: "Сильный ветер повреждает стебли и сдувает мульчу. Установите ветрозащитные экраны, посадите кулисные растения, подвязывайте высокие культуры." }
+                ];
+                let html = '<div class="subcategory">';
+                for (let w of weatherSubs) {
+                    html += `
+                        <div>
+                            <div class="subcategory-title" data-weather="${w.title}">${w.icon} ${w.title}</div>
+                            <div class="subcategory-content" id="weather-${w.title.replace(/[^a-zA-Zа-яё]/gi, '')}" style="display:none;">
+                                <div class="weather-item"><div class="weather-icon">${w.icon}</div><div class="weather-text"><p>${w.text}</p></div></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+                return html;
+            }
+
+            function renderPests() {
+                const pestList = [
+                    { name: "Тля", description: pestsAdvice["Тля"], suspects: pestsData["Тля"] },
+                    { name: "Белокрылка", description: pestsAdvice["Белокрылка"], suspects: pestsData["Белокрылка"] },
+                    { name: "Паутинный клещ", description: pestsAdvice["Паутинный клещ"], suspects: pestsData["Паутинный клещ"] }
+                ];
+                let html = '<div class="subcategory">';
+                for (let p of pestList) {
+                    let suspectList = '<div class="pest-suspect-list"><p> Могут быть у:</p><ul>';
+                    for (let s of p.suspects) {
+                        suspectList += `<li>🍅 ${s}</li>`;
+                    }
+                    suspectList += '</ul></div>';
+                    html += `
+                        <div>
+                            <div class="subcategory-title" data-pest="${p.name}"> ${p.name}</div>
+                            <div class="subcategory-content" id="pest-${p.name.replace(/ /g, '')}" style="display:none;">
+                                <div class="weather-item"><div class="weather-icon"></div><div class="weather-text"><p>${p.description}</p>${suspectList}</div></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+                return html;
+            }
+
+            const sections = [
+                { title: " О растениях", id: "plants", content: renderPlants() },
+                { title: " О погодных условиях", id: "weather", content: renderWeather() },
+                { title: " О вредителях", id: "pests", content: renderPests() }
+            ];
+
+            let mainHtml = '';
+            sections.forEach(section => {
+                mainHtml += `<div class="encyclopedia-section"><div class="section-title"> ${section.title}</div><div class="section-content" style="display:none;">${section.content}</div></div>`;
+            });
+            root.innerHTML = mainHtml;
+
+            document.querySelectorAll('.section-title').forEach(title => {
+                title.addEventListener('click', (e) => {
+                    const contentDiv = title.parentElement.querySelector('.section-content');
+                    if (contentDiv) contentDiv.style.display = contentDiv.style.display === 'block' ? 'none' : 'block';
+                    e.stopPropagation();
+                });
+            });
+
+            document.querySelectorAll('.subcategory-title').forEach(sub => {
+                sub.addEventListener('click', (e) => {
+                    const plantName = sub.getAttribute('data-plant');
+                    if (plantName) {
+                        const targetDiv = document.getElementById(`plant-${plantName.replace(/ /g, '')}`);
+                        if (targetDiv) targetDiv.style.display = targetDiv.style.display === 'block' ? 'none' : 'block';
+                    }
+                    const weatherKey = sub.getAttribute('data-weather');
+                    if (weatherKey) {
+                        const targetDiv = document.getElementById(`weather-${weatherKey.replace(/[^a-zA-Zа-яё]/gi, '')}`);
+                        if (targetDiv) targetDiv.style.display = targetDiv.style.display === 'block' ? 'none' : 'block';
+                    }
+                    const pestKey = sub.getAttribute('data-pest');
+                    if (pestKey) {
+                        const targetDiv = document.getElementById(`pest-${pestKey.replace(/ /g, '')}`);
+                        if (targetDiv) targetDiv.style.display = targetDiv.style.display === 'block' ? 'none' : 'block';
+                    }
+                    e.stopPropagation();
+                });
+            });
+
+            document.querySelectorAll('.variety-name').forEach(vname => {
+                vname.addEventListener('click', (e) => {
+                    const variety = vname.getAttribute('data-variety');
+                    const detailsDiv = document.getElementById(`details-${variety.replace(/ /g, '')}`);
+                    if (detailsDiv) detailsDiv.style.display = detailsDiv.style.display === 'block' ? 'none' : 'block';
+                    e.stopPropagation();
+                });
+            });
+        }
+
+        // ---------- СТРАНИЦЫ ----------
+        function renderAbout() {
+            return `<div class="page-content"><h2> О сайте</h2><p>На этом сайте вы можете получить рекомендации от нашего ИИ по выращиванию сада, рекомендации по тому, что стоит выращивать и банально почитать информацию свободно. </p></div>`;
+        }
+
+        function renderResearch() {
+            return `
+                <div class="page-content">
+                    <h2> Исследование · условия выращивания</h2>
+                    <div class="form-section">
+                        <h3>1. Культура и сорт</h3>
+                        <div class="select-group"><label for="veg-type">Выберите вид овоща </label><select id="veg-type"><option value="">— выберите —</option><option value="tomato">Помидор</option><option value="cucumber">Огурец</option><option value="onion">Лук</option></select></div>
+                        <div class="select-group"><label for="veg-variety">Выберите сорт </label><select id="veg-variety" disabled><option value="">— сначала выберите вид —</option></select></div>
+                    </div>
+                    <div class="form-section"><h3>2. Место выращивания</h3><div class="select-group"><label for="grow-place">Где выращиваете?</label><select id="grow-place"><option value="">— выберите —</option><option value="open">На открытом участке</option><option value="greenhouse">В теплице</option><option value="container">В контейнере (горшок и т.д.)</option></select></div></div>
+                    <div class="form-section"><h3>3. Освещение</h3><div class="select-group"><label for="light-type">Тип освещения</label><select id="light-type"><option value="">— выберите —</option><option value="sun">Солнечный свет</option><option value="led">Светодиодные лампы</option><option value="fluorescent">Люминесцентные лампы</option><option value="sodium">Натриевые лампы</option></select></div>
+                    <div class="select-group" id="lux-group" style="display: none;"><label for="lux-level">Освещённость (люксы)</label><select id="lux-level" disabled><option value="">— выберите диапазон —</option><option value="1">1-2 тыс.</option><option value="2">2-4 тыс.</option><option value="3">5-6 тыс.</option><option value="4">6-7 тыс.</option><option value="5">7-9 тыс.</option><option value="6">10+ тыс.</option></select></div></div>
+                    <div class="form-section"><h3>4. Влажность воздуха</h3><div class="select-group"><label for="humidity-level">Выберите влажность воздуха </label><select id="humidity-level"><option value="">— выберите диапазон —</option><option value="1">0-20% (Очень сухо)</option><option value="2">20-40% (Сухо)</option><option value="3">40-60% (Умеренно)</option><option value="4">60-80% (Влажно)</option><option value="5">80-100% (Очень влажно)</option></select></div></div>
+                    <button id="search-btn" class="search-btn" disabled> Найти</button>
+                    <div id="research-result"></div>
+                </div>
+            `;
+        }
+
+        function attachResearchEvents() {
+            const typeSelect = document.getElementById('veg-type');
+            const varietySelect = document.getElementById('veg-variety');
+            const growPlace = document.getElementById('grow-place');
+            const lightType = document.getElementById('light-type');
+            const luxGroup = document.getElementById('lux-group');
+            const luxLevel = document.getElementById('lux-level');
+            const humidityLevel = document.getElementById('humidity-level');
+            const searchBtn = document.getElementById('search-btn');
+            const resultDiv = document.getElementById('research-result');
+
+            function checkFormComplete() {
+                const vegType = typeSelect.value;
+                const vegVariety = varietySelect.value;
+                const place = growPlace.value;
+                const light = lightType.value;
+                const humidity = humidityLevel.value;
+                let complete = vegType && vegVariety && place && light && humidity;
+                if (light && light !== 'sun') {
+                    complete = complete && luxLevel.value;
+                }
+                searchBtn.disabled = !complete;
+            }
+
+            function updateVarieties() {
+                const selectedType = typeSelect.value;
+                if (!selectedType) {
+                    varietySelect.disabled = true;
+                    varietySelect.innerHTML = '<option value="">— сначала выберите вид —</option>';
+                    checkFormComplete();
+                    return;
+                }
+                const varieties = vegData[selectedType].varieties;
+                let options = '<option value="">— выберите сорт —</option>';
+                varieties.forEach(v => { options += `<option value="${v}">${v}</option>`; });
+                varietySelect.innerHTML = options;
+                varietySelect.disabled = false;
+                checkFormComplete();
+            }
+
+            function updateLuxVisibility() {
+                const light = lightType.value;
+                if (light && light !== 'sun') {
+                    luxGroup.style.display = 'block';
+                    luxLevel.disabled = false;
+                } else {
+                    luxGroup.style.display = 'none';
+                    luxLevel.disabled = true;
+                    luxLevel.value = '';
+                }
+                checkFormComplete();
+            }
+
+            function evaluate() {
+                const variety = varietySelect.value;
+                const place = growPlace.value;
+                const light = lightType.value;
+                const userLight = light === 'sun' ? null : parseInt(luxLevel.value);
+                const userHumidity = parseInt(humidityLevel.value);
+                const required = encyclopediaData[variety];
+                if (!required) return;
+
+                let placeOk = false;
+                if (required.place === "Теплица / открытый грунт") placeOk = true;
+                else if (required.place === "Теплица" && place === "greenhouse") placeOk = true;
+                else if (required.place === "Открытый грунт" && place === "open") placeOk = true;
+                else if (place === "container") placeOk = false;
+                else placeOk = false;
+
+                let lightScoreHTML = '';
+                let humidityScoreHTML = '';
+                let lightAdvice = '';
+                let humidityAdvice = '';
+
+                if (light !== 'sun') {
+                    let lightScore = getScore(userLight, required.lightFilled);
+                    lightScoreHTML = `<div class="result-card"> Освещение: ${lightScore}/10 <span class="score">${lightScore}/10</span><br>${getLightAdvice(userLight, required.lightFilled, light)}</div>`;
+                } else {
+                    lightScoreHTML = `<div class="result-card"> Освещение: солнечный свет<br> Совет: обеспечьте растению 10–12 часов светового дня. Используйте отражающие экраны при необходимости.</div>`;
+                }
+
+                let humidityScore = getScore(userHumidity, required.humidityFilled);
+                humidityScoreHTML = `<div class="result-card"> Влажность воздуха: ${humidityScore}/10 <span class="score">${humidityScore}/10</span><br>${getHumidityAdvice(userHumidity, required.humidityFilled)}</div>`;
+
+                let placeHTML = `<div class="result-card"> Место выращивания: ${place === 'open' ? 'открытый грунт' : place === 'greenhouse' ? 'теплица' : 'контейнер'} — ${placeOk ? '✅ подходит' : '❌ не подходит для этого сорта'}</div>`;
+
+                let pestsHTML = '';
+                let relevantPests = [];
+                for (let [pest, varieties] of Object.entries(pestsData)) {
+                    if (varieties.includes(variety)) {
+                        relevantPests.push(pest);
+                    }
+                }
+                if (relevantPests.length > 0) {
+                    pestsHTML = `<div class="result-card"> Возможные вредители:<ul>`;
+                    for (let p of relevantPests) {
+                        pestsHTML += `<li><strong>${p}</strong>: ${pestsAdvice[p]}</li>`;
+                    }
+                    pestsHTML += `</ul></div>`;
+                } else {
+                    pestsHTML = `<div class="result-card">✅ Этот сорт устойчив к основным вредителям из списка.</div>`;
+                }
+
+                let overall = `<div style="font-size:1.4rem; font-weight:bold; margin-bottom:1rem;"> Стоит ли выращивать?</div>`;
+                overall += placeHTML + lightScoreHTML + humidityScoreHTML + pestsHTML;
+                resultDiv.innerHTML = overall;
+            }
+
+            typeSelect.addEventListener('change', () => { updateVarieties(); checkFormComplete(); });
+            varietySelect.addEventListener('change', checkFormComplete);
+            growPlace.addEventListener('change', checkFormComplete);
+            lightType.addEventListener('change', () => { updateLuxVisibility(); checkFormComplete(); });
+            luxLevel.addEventListener('change', checkFormComplete);
+            humidityLevel.addEventListener('change', checkFormComplete);
+            searchBtn.addEventListener('click', evaluate);
+
+            updateVarieties();
+            updateLuxVisibility();
+            checkFormComplete();
+        }
+
+        // ---------- НАВИГАЦИЯ ----------
+        function setActiveButton(activePage) {
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                if (btn.getAttribute('data-page') === activePage) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        function loadPage(page) {
+            const contentDiv = document.getElementById('content');
+            if (page === 'about') {
+                contentDiv.innerHTML = renderAbout();
+                setActiveButton('about');
+            } else if (page === 'research') {
+                contentDiv.innerHTML = renderResearch();
+                setActiveButton('research');
+                attachResearchEvents();
+            } else if (page === 'encyclopedia') {
+                contentDiv.innerHTML = getEncyclopediaHTML();
+                setActiveButton('encyclopedia');
+                initEncyclopediaScripts();
+            }
+        }
+
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const page = btn.getAttribute('data-page');
+                if (page) loadPage(page);
+            });
+        });
+
+        loadPage('about');
+    </script>
+</body>
+</html>
